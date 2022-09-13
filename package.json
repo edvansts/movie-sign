@@ -6,6 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "main": "dist/main.js",
+  "engines": {
+    "node": "16.x",
+    "yarn": "1.22.x"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
