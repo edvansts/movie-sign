@@ -9,7 +9,10 @@ import { TheMovieDbService } from './the-movie-db.service';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         baseURL: 'https://api.themoviedb.org/3/',
-        params: { api_key: configService.get('THE_MOVIE_DB_API_KEY') },
+        params: {
+          api_key: configService.get('THE_MOVIE_DB_API_KEY'),
+          language: 'pt-BR',
+        },
       }),
       inject: [ConfigService],
     }),

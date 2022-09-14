@@ -8,6 +8,9 @@ export class Movie {
   @Prop({ required: true })
   title: string;
 
+  @Prop()
+  originalTitle: string;
+
   @Prop({ required: true })
   lastRating: number;
 
@@ -15,16 +18,19 @@ export class Movie {
   overview: string;
 
   @Prop({ required: true })
-  popularity: number;
+  lastPopularity: number;
 
   @Prop({ required: true })
   releaseDate: Date;
 
   @Prop()
-  posterImage: string;
+  posterImage: string | null;
 
   @Prop()
-  externalId: string;
+  tmdbId: string | null;
+
+  @Prop()
+  imdbId: string | null;
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);
