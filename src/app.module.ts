@@ -3,11 +3,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { MoviesModule } from './modules/movies/movies.module';
+import { validate } from './config/env';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      validate,
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

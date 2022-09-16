@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { TMediaTypes } from 'src/types';
-import { DtoMovie, DtoTrending, TTimeWindow } from './types';
+import { DtoMovie, DtoSearchMovie, DtoTrending, TTimeWindow } from './types';
 
 @Injectable()
 export class TheMovieDbService {
@@ -26,6 +26,19 @@ export class TheMovieDbService {
     try {
       const response = await this.httpService.axiosRef.get<DtoMovie>(
         `/movie/${id}`,
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async searchMovie(query: string) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoSearchMovie>(
+        `/search/movie`,
+        { params: { query } },
       );
 
       return response.data;
