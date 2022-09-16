@@ -165,12 +165,6 @@ export class MoviesService {
       { $limit: limit },
     ]);
 
-    const findedMoviesLength = findedMovies.length;
-
-    if (findedMoviesLength === limit) {
-      return findedMovies;
-    }
-
     const isQuerySearchedEarly = await this.searchedQueriesModel.findOne({
       query,
     });
@@ -182,20 +176,16 @@ export class MoviesService {
     const { results: externalSearchedMovies } =
       await this.theMovieDbService.searchMovie(query);
 
-    const moviesToAdd = numberSortByKey<typeof externalSearchedMovies>(
-      'popularity',
-      externalSearchedMovies,
-      'desc',
-    )
-      .filter(
-        (movie) =>
-          !findedMovies.map(({ tmdbId }) => tmdbId).includes(String(movie.id)),
-      )
-      .slice(0, limit - findedMoviesLength);
+    const externalSearchedMoviesNormalized = numberSortByKey<
+      typeof externalSearchedMovies
+    >('popularity', externalSearchedMovies, 'desc').filter(
+      (movie) =>
+        !findedMovies.map(({ tmdbId }) => tmdbId).includes(String(movie.id)),
+    );
 
     const extraMovies = (
       await Promise.all(
-        moviesToAdd.map(async (movie) => {
+        externalSearchedMoviesNormalized.map(async (movie) => {
           const { id, popularity, vote_average } = movie;
 
           try {
@@ -218,7 +208,7 @@ export class MoviesService {
       'popularity',
       [...findedMovies, ...extraMovies],
       'desc',
-    );
+    ).slice(0, limit);
 
     this.searchedQueriesModel.create({
       query,
