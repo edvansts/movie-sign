@@ -12,11 +12,9 @@ import { MoviesService } from './movies.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }]),
     MongooseModule.forFeature([
+      { name: Movie.name, schema: MovieSchema },
       { name: Trending.name, schema: TrendingSchema },
-    ]),
-    MongooseModule.forFeature([
       { name: SearchQueries.name, schema: SearchQueriesSchema },
     ]),
     TheMovieDbModule,

@@ -2,10 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 import { TMediaTypes } from 'src/types';
 
-export type TrendingDocument = Trending & Document;
-
-@Schema()
-export class Trending {
+@Schema({ versionKey: false })
+class Trending {
   @Prop({ required: true })
   type: TMediaTypes;
 
@@ -19,4 +17,7 @@ export class Trending {
   list: ObjectId[];
 }
 
-export const TrendingSchema = SchemaFactory.createForClass(Trending);
+const TrendingSchema = SchemaFactory.createForClass(Trending);
+
+export type TrendingDocument = Trending & Document;
+export { TrendingSchema, Trending };

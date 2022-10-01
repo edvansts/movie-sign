@@ -3,7 +3,10 @@ import { Document } from 'mongoose';
 
 export type SearchQueriesDocument = SearchQueries & Document;
 
-@Schema()
+@Schema({
+  timestamps: true,
+  versionKey: false,
+})
 export class SearchQueries {
   @Prop({ required: true })
   query: string;
