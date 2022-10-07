@@ -1,7 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { defaultImgUrlTmdb } from 'src/constants';
 import { Movie, MovieDocument } from 'src/schemas/movie.schema';
 import { Trending, TrendingDocument } from 'src/schemas/trending.schema';
 import { TheMovieDbService } from '../the-movie-db/the-movie-db.service';
@@ -12,12 +16,16 @@ import {
   SearchQueries,
   SearchQueriesDocument,
 } from 'src/schemas/searched-queries.schema';
+import { Cast, CastDocument } from 'src/schemas/cast.schema';
+import { TDepartmentWorked } from 'src/types';
+import { getImageUrl, normalizeGender } from 'src/helpers';
 
 @Injectable()
 export class MoviesService {
   constructor(
     @InjectModel(Movie.name) private movieModel: Model<MovieDocument>,
     @InjectModel(Trending.name) private trendingModel: Model<TrendingDocument>,
+    @InjectModel(Cast.name) private castModel: Model<CastDocument>,
     @InjectModel(SearchQueries.name)
     private searchedQueriesModel: Model<SearchQueriesDocument>,
     private readonly theMovieDbService: TheMovieDbService,
@@ -134,7 +142,7 @@ export class MoviesService {
       lastPopularity: popularity,
       imdbId: imdb_id,
       tmdbId: newTmdbId,
-      posterImage: poster_path ? `${defaultImgUrlTmdb}${poster_path}` : null,
+      posterImage: poster_path ? getImageUrl(poster_path) : null,
       overview: overview || '',
       originalTitle: original_title || '',
     });
@@ -215,5 +223,72 @@ export class MoviesService {
     });
 
     return allSearchedMovies;
+  }
+
+  async getMovieCast(movieId: string) {
+    const movie = await this.movieModel.findById(movieId);
+
+    if (!movie) {
+      throw new NotFoundException('Filme não encontrado');
+    }
+
+    try {
+      const movieCasts = await this.getCastsByMovieId(movie.id);
+
+      if (movieCasts.length > 0) {
+        return movieCasts;
+      }
+
+      const { cast } = await this.theMovieDbService.getMovieCredits(
+        movie.tmdbId,
+      );
+
+      console.log(cast);
+
+      const newCasts = cast.map((people) => {
+        const {
+          name,
+          popularity,
+          gender,
+          id,
+          character,
+          known_for_department,
+          order,
+          profile_path,
+        } = people;
+
+        return new this.castModel({
+          name,
+          lastPopularity: popularity,
+          order,
+          character,
+          tmdbId: id,
+          departmentWorked: known_for_department as TDepartmentWorked,
+          gender: normalizeGender(gender),
+          profileImage: getImageUrl(profile_path),
+          movieId: movie.id,
+        });
+      });
+
+      this.castModel.insertMany(newCasts);
+
+      return newCasts;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private async getCastsByMovieId(movieId: string) {
+    try {
+      const casts = await this.castModel
+        .find({
+          movieId,
+        })
+        .sort({ order: 'ascending' });
+
+      return casts;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.NOT_FOUND);
+    }
   }
 }

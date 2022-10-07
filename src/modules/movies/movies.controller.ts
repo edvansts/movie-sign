@@ -1,4 +1,11 @@
-import { Controller, Get, Header, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Header,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { defaultCache } from 'src/constants';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { MoviesService } from './movies.service';
@@ -19,5 +26,11 @@ export class MoviesController {
   @Header('Cache-Control', defaultCache)
   async searchByName(@Query() params: SearchByNameQueryParams) {
     return await this.moviesService.searchMoviesByQuery(params);
+  }
+
+  @Get(':movieId/cast')
+  @Header('Cache-Control', defaultCache)
+  async getMovieCast(@Param('movieId') movieId: string) {
+    return await this.moviesService.getMovieCast(movieId);
   }
 }

@@ -1,7 +1,13 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { TMediaTypes } from 'src/types';
-import { DtoMovie, DtoSearchMovie, DtoTrending, TTimeWindow } from './types';
+import {
+  DtoMovie,
+  DtoMovieCredits,
+  DtoSearchMovie,
+  DtoTrending,
+  TTimeWindow,
+} from './types';
 
 @Injectable()
 export class TheMovieDbService {
@@ -43,6 +49,21 @@ export class TheMovieDbService {
 
       return response.data;
     } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getMovieCredits(movieId: string) {
+    try {
+      console.log('po');
+      const response = await this.httpService.axiosRef.get<DtoMovieCredits>(
+        `/movie/${movieId}/credits`,
+      );
+      console.log(response.data);
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
       throw new Error(error);
     }
   }
