@@ -12,7 +12,7 @@ import { MoviesService } from './movies.service';
 import { SearchByNameQueryParams } from './movies.validator';
 
 @Controller('movies')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 

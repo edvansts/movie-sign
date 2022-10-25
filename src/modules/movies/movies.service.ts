@@ -46,10 +46,8 @@ export class MoviesService {
       if (weekTrending) {
         const list = await this.movieModel
           .find({
-            id: {
-              $elemMatch: {
-                $in: weekTrending.list,
-              },
+            _id: {
+              $in: weekTrending.list,
             },
           })
           .sort({ lastPopularity: 'desc' });
@@ -96,7 +94,7 @@ export class MoviesService {
         list: sortedList,
       });
 
-      return moviesList;
+      return sortedList;
     } catch (err) {
       throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
