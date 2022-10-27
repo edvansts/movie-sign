@@ -17,7 +17,7 @@ import {
   SearchQueriesDocument,
 } from 'src/schemas/searched-queries.schema';
 import { Cast, CastDocument } from 'src/schemas/cast.schema';
-import { TDepartmentWorked } from 'src/types';
+import { MEDIA_TYPE, TDepartmentWorked } from 'src/types';
 import { getImageUrl, normalizeGender } from 'src/helpers';
 
 @Injectable()
@@ -35,6 +35,7 @@ export class MoviesService {
     try {
       const today = new Date();
       const weekTrending = await this.trendingModel.findOne({
+        type: MEDIA_TYPE.movie,
         startedAt: {
           $lt: today,
         },
@@ -55,10 +56,8 @@ export class MoviesService {
         return list;
       }
 
-      const { results: movies } = await this.theMovieDbService.getTrending(
-        'movie',
-        'week',
-      );
+      const { results: movies } =
+        await this.theMovieDbService.getTrendingMovies();
 
       const moviesList = (
         await Promise.all(
@@ -81,17 +80,13 @@ export class MoviesService {
         )
       ).filter((movie) => !!movie);
 
-      const sortedList = numberSortByKey(
-        'lastPopularity',
-        moviesList,
-        'desc',
-      ).map(({ _id }) => _id);
+      const sortedList = numberSortByKey('lastPopularity', moviesList, 'desc');
 
       this.trendingModel.create({
         startedAt: startOfWeek(today),
         endedAt: endOfWeek(today),
-        type: 'movie',
-        list: sortedList,
+        type: MEDIA_TYPE.movie,
+        list: sortedList.map(({ _id }) => _id),
       });
 
       return sortedList;
@@ -131,6 +126,8 @@ export class MoviesService {
       imdb_id,
       id: newTmdbId,
       overview,
+      backdrop_path,
+      adult,
     } = await this.theMovieDbService.getMovieById(tmdbId);
 
     const newMovieModel = new this.movieModel({
@@ -140,9 +137,11 @@ export class MoviesService {
       lastPopularity: popularity,
       imdbId: imdb_id,
       tmdbId: newTmdbId,
-      posterImage: poster_path ? getImageUrl(poster_path) : null,
+      posterImage: poster_path ?? getImageUrl(poster_path),
+      backdropImage: backdrop_path ?? getImageUrl(backdrop_path),
       overview: overview || '',
       originalTitle: original_title || '',
+      adult,
     });
 
     const createdMovie = await this.movieModel.create(newMovieModel);
@@ -241,8 +240,6 @@ export class MoviesService {
         movie.tmdbId,
       );
 
-      console.log(cast);
-
       const newCasts = cast.map((people) => {
         const {
           name,
@@ -264,7 +261,7 @@ export class MoviesService {
           departmentWorked: known_for_department as TDepartmentWorked,
           gender: normalizeGender(gender),
           profileImage: getImageUrl(profile_path),
-          movieId: movie.id,
+          movieId: movie._id,
         });
       });
 

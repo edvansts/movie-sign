@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, ObjectId } from 'mongoose';
+import { Document, ObjectId, Types } from 'mongoose';
 import { TDepartmentWorked, TGender } from 'src/types';
 
 export type CastDocument = Cast & Document;
@@ -33,7 +33,7 @@ export class Cast {
   @Prop()
   tmdbId: string | null;
 
-  @Prop({ required: true, type: 'string' })
+  @Prop({ required: true, type: Types.ObjectId })
   movieId: ObjectId;
 }
 

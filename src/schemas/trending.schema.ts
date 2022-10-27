@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
-import { TMediaTypes } from 'src/types';
+import { MEDIA_TYPE } from 'src/types';
 
 @Schema({ versionKey: false })
 class Trending {
   @Prop({ required: true })
-  type: TMediaTypes;
+  type: MEDIA_TYPE;
 
   @Prop({ required: true })
   startedAt: Date;

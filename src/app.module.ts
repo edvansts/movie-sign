@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MoviesModule } from './modules/movies/movies.module';
 import { validate } from './config/env';
 import { AuthModule } from './modules/auth/auth.module';
+import { TvShowsModule } from './modules/tv-shows/tv-shows.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from './modules/auth/auth.module';
     MongooseModule.forRoot(process.env.DATABASE_URL),
     MoviesModule,
     AuthModule,
+    TvShowsModule,
   ],
   controllers: [],
   providers: [],

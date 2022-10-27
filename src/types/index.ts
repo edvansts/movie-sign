@@ -1,4 +1,9 @@
-export type TMediaTypes = 'all' | 'movie' | 'tv' | 'person';
+export enum MEDIA_TYPE {
+  'all' = 'all',
+  'movie' = 'movie',
+  'tv' = 'tv',
+  'person' = 'person',
+}
 
 export type TDepartmentWorked =
   | 'Sound'

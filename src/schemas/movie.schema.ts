@@ -27,13 +27,19 @@ export class Movie {
   releaseDate: Date;
 
   @Prop()
-  posterImage: string | null;
+  posterImage?: string;
 
   @Prop()
-  tmdbId: string | null;
+  backdropImage?: string;
 
   @Prop()
-  imdbId: string | null;
+  tmdbId?: string;
+
+  @Prop()
+  imdbId?: string;
+
+  @Prop()
+  adult?: boolean;
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);

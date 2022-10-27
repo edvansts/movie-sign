@@ -1,6 +1,6 @@
 export type TTimeWindow = 'day' | 'week';
 
-export type TProductionStatus =
+export type TMovieProductionStatus =
   | 'Rumored'
   | 'Planned'
   | 'In Production'
@@ -8,7 +8,7 @@ export type TProductionStatus =
   | 'Released'
   | 'Canceled';
 
-interface MinimalMovie {
+export interface MinimalMovie {
   poster_path?: string | null;
   adult?: boolean;
   overview?: string;
@@ -25,9 +25,27 @@ interface MinimalMovie {
   vote_average?: number;
 }
 
-export type DtoTrending = {
+export interface MinimalTvShow {
+  poster_path?: string | null;
+  adult?: boolean;
+  id?: number;
+  original_name?: string;
+  original_language?: string;
+  name?: string;
+  backdrop_path?: string | null;
+  overview?: string;
+  first_air_date: string;
+  genre_ids?: string[];
+  popularity?: number;
+  vote_count?: number;
+  video?: boolean;
+  vote_average?: number;
+  origin_country?: string[];
+}
+
+export type DtoTrending<T> = {
   page: number;
-  results?: MinimalMovie[];
+  results?: T[];
   total_pages: number;
   total_results: number;
 };
@@ -55,7 +73,98 @@ export type DtoMovie = {
     logo_path: string | null;
     origin_country: string;
   }[];
-  status: TProductionStatus;
+  status: TMovieProductionStatus;
+};
+
+export type DtoTvShow = {
+  adult?: boolean;
+  backdrop_path?: string | null;
+  created_by?: {
+    id: number;
+    credit_id: string;
+    name: string;
+    gender: number;
+    profile_path: string | null;
+  }[];
+  genres: {
+    id: number;
+    name: string;
+  }[];
+  homepage: string | null;
+  in_production: boolean;
+  episode_run_time: number[];
+  first_air_date: string;
+  last_air_date: string;
+  poster_path?: string | null;
+  last_episode_to_air: {
+    air_date: string;
+    episode_number: number;
+    id: number;
+    name: string;
+    overview: string;
+    production_code: string;
+    runtime: number;
+    season_number: number;
+    show_id: number;
+    still_path: string;
+    vote_average: number;
+    vote_count: number;
+  };
+  next_episode_to_air?: {
+    air_date: string;
+    episode_number: number;
+    id: number;
+    name: string;
+    overview: string;
+    production_code: string;
+    runtime: number;
+    season_number: number;
+    show_id: number;
+    still_path: string;
+    vote_average: number;
+    vote_count: number;
+  };
+  networks: {
+    id: number;
+    name: string;
+    logo_path: string;
+    origin_country: string;
+  }[];
+  number_of_episodes: number;
+  number_of_seasons: number;
+  overview: string | null;
+  original_language?: string;
+  original_name?: string;
+  name?: string;
+  popularity?: number;
+  genre_ids?: string[];
+  vote_count?: number;
+  video?: boolean;
+  vote_average?: number;
+  id: number;
+  tagline?: string;
+  imdb_id?: string | null;
+  production_companies: {
+    name: string;
+    id: number;
+    logo_path: string | null;
+    origin_country: string;
+  }[];
+  production_countries: {
+    iso_3166_1: string;
+    name: string;
+  }[];
+  seasons: {
+    air_date: string;
+    episode_count: number;
+    id: number;
+    name: string;
+    overview: string;
+    poster_path: string;
+    season_number: number;
+  }[];
+  status: string;
+  languages: string[];
 };
 
 export type DtoSearchMovie = {
@@ -95,3 +204,27 @@ export type DtoMovieCredits = {
     job: string;
   }[];
 };
+
+export interface DtoSeason {
+  _id: string;
+  air_date: string;
+  episodes: {
+    air_date: string;
+    episode_number: number;
+    crew?: any[];
+    guestStars?: any[];
+    id: number;
+    name: string;
+    overview: string;
+    production_code: string;
+    season_number?: number;
+    still_path?: string;
+    vote_average?: number;
+    vote_count?: number;
+  }[];
+  name: string;
+  overview: string;
+  id: string;
+  poster_path?: string | null;
+  season_number: number;
+}

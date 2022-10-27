@@ -1,11 +1,15 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { TMediaTypes } from 'src/types';
+import { MEDIA_TYPE } from 'src/types';
 import {
   DtoMovie,
   DtoMovieCredits,
   DtoSearchMovie,
+  DtoSeason,
   DtoTrending,
+  DtoTvShow,
+  MinimalMovie,
+  MinimalTvShow,
   TTimeWindow,
 } from './types';
 
@@ -13,12 +17,12 @@ import {
 export class TheMovieDbService {
   constructor(private readonly httpService: HttpService) {}
 
-  async getTrending(
-    mediaType: TMediaTypes = 'all',
+  private async getTrending<T>(
+    mediaType: MEDIA_TYPE = MEDIA_TYPE.all,
     timeWindow: TTimeWindow = 'week',
   ) {
     try {
-      const response = await this.httpService.axiosRef.get<DtoTrending>(
+      const response = await this.httpService.axiosRef.get<DtoTrending<T>>(
         `/trending/${mediaType}/${timeWindow}`,
       );
 
@@ -28,10 +32,30 @@ export class TheMovieDbService {
     }
   }
 
+  async getTrendingMovies(timeWindow: TTimeWindow = 'week') {
+    return await this.getTrending<MinimalMovie>(MEDIA_TYPE.movie, timeWindow);
+  }
+
+  async getTrendingTvShows(timeWindow: TTimeWindow = 'week') {
+    return await this.getTrending<MinimalTvShow>(MEDIA_TYPE.tv, timeWindow);
+  }
+
   async getMovieById(id: number | string) {
     try {
       const response = await this.httpService.axiosRef.get<DtoMovie>(
         `/movie/${id}`,
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getTvShowById(id: number | string) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoTvShow>(
+        `/tv/${id}`,
       );
 
       return response.data;
@@ -55,15 +79,24 @@ export class TheMovieDbService {
 
   async getMovieCredits(movieId: string) {
     try {
-      console.log('po');
       const response = await this.httpService.axiosRef.get<DtoMovieCredits>(
         `/movie/${movieId}/credits`,
       );
-      console.log(response.data);
 
       return response.data;
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
+    }
+  }
+
+  async getSeasonByTvShowId(tvShowId: string | number, seasonNumber: number) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoSeason>(
+        `/tv/${tvShowId}/season/${seasonNumber}`,
+      );
+
+      return response.data;
+    } catch (error) {
       throw new Error(error);
     }
   }
