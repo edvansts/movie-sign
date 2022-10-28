@@ -11,9 +11,11 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(payload: RegisterBody) {
-    const { email } = payload;
+    const { email, username } = payload;
 
-    const user = await this.userModel.findOne({ email });
+    const user = await this.userModel.exists({
+      $or: [{ email }, { username }],
+    });
 
     if (user) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);

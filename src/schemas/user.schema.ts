@@ -18,6 +18,12 @@ class User {
 
   @Prop()
   updatedAt?: Date;
+
+  @Prop({ required: true })
+  username: string;
+
+  @Prop({ required: true })
+  name: string;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);

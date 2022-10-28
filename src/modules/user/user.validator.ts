@@ -8,4 +8,12 @@ export class RegisterBody {
   @IsString()
   @Length(8, 30)
   password: string;
+
+  @IsString()
+  @Length(8, 30)
+  username: string;
+
+  @IsString()
+  @Length(4, 50)
+  name: string;
 }
