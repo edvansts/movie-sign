@@ -1,9 +1,8 @@
-import { Length, IsString, IsEmail } from 'class-validator';
+import { Length, IsString } from 'class-validator';
 
 export class LoginBody {
   @IsString()
-  @IsEmail()
-  email: string;
+  user: string;
 
   @IsString()
   @Length(8, 30)

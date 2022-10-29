@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { RegisterBody } from '../user/user.validator';
 import { LoginBody } from './auth.validator';
+import { SignPayload } from './types';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
   ) {}
   ƒ;
 
-  async signPayload(payload: LoginBody) {
+  async signPayload(payload: SignPayload) {
     return this.jwtService.sign(payload);
   }
 
@@ -22,16 +23,18 @@ export class AuthService {
     return await this.userService.findByPayload(payload);
   }
 
-  async register(loginDto: RegisterBody) {
-    const createdUser = await this.userService.create(loginDto);
+  async register(registerDto: RegisterBody) {
+    const createdUser = await this.userService.create(registerDto);
 
-    const token = await this.signPayload(createdUser);
+    const { email, password } = createdUser;
+
+    const token = await this.signPayload({ email, password });
 
     return { user: createdUser, token };
   }
 
-  async login(userDto: LoginBody) {
-    const user = await this.userService.findByLogin(userDto);
+  async login(dtoUser: LoginBody) {
+    const user = await this.userService.findByLogin(dtoUser);
 
     const token = await this.signPayload({
       email: user.email,
