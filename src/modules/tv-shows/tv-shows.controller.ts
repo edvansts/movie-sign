@@ -1,13 +1,24 @@
 import { Controller, Get, Header, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { defaultCache } from 'src/constants';
+import { TvShow } from 'src/schemas/tv-show.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TvShowsService } from './tv-shows.service';
 
+@ApiBearerAuth()
+@ApiTags('tv-shows')
 @Controller('tv-shows')
 @UseGuards(JwtAuthGuard)
 export class TvShowsController {
   constructor(private readonly tvShowsService: TvShowsService) {}
 
+  @ApiOperation({ summary: 'Get this week trending tv shows;' })
+  @ApiResponse({ status: 200, type: [TvShow] })
   @Get('trending')
   @Header('Cache-Control', defaultCache)
   async getTrendingTvShows() {
