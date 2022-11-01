@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type TvShowDocument = TvShow & Document;
 
@@ -8,30 +9,46 @@ export type TvShowDocument = TvShow & Document;
   versionKey: false,
 })
 export class TvShow {
+  @Prop()
+  createdAt?: Date;
+
+  @ApiProperty()
+  @Prop()
+  updatedAt?: Date;
+
+  @ApiProperty()
   @Prop({ required: true })
   name: string;
 
+  @ApiProperty()
   @Prop()
   originalName: string;
 
+  @ApiProperty()
   @Prop({ required: true })
   lastRating: number;
 
+  @ApiProperty()
   @Prop({ required: true })
   overview: string;
 
+  @ApiProperty()
   @Prop({ required: true })
   lastPopularity: number;
 
+  @ApiProperty()
   @Prop({ required: true })
   firstAirDate: Date;
 
+  @ApiProperty()
   @Prop({ required: true })
   lastAirDate: Date;
 
+  @ApiProperty()
   @Prop()
   posterImage?: string;
 
+  @ApiProperty()
   @Prop()
   backdropImage?: string;
 
@@ -41,9 +58,11 @@ export class TvShow {
   @Prop()
   imdbId?: string;
 
+  @ApiProperty()
   @Prop()
   adult?: boolean;
 
+  @ApiProperty()
   @Prop()
   createdBy?: {
     id: number;
@@ -53,18 +72,22 @@ export class TvShow {
     profile_path: string | null;
   }[];
 
+  @ApiProperty()
   @Prop()
   genres?: {
     id: number;
     name: string;
   }[];
 
+  @ApiProperty()
   @Prop()
+  @ApiProperty()
   homepage?: string;
 
   @Prop()
   inProduction: boolean;
 
+  @ApiProperty()
   @Prop({ type: 'object' })
   lastEpisodeToAir?: {
     airDate: string;
@@ -76,6 +99,7 @@ export class TvShow {
     voteAverage: number;
   };
 
+  @ApiProperty()
   @Prop({ type: 'object' })
   nextEpisodeToAir?: {
     airDate: string;
@@ -87,15 +111,19 @@ export class TvShow {
     voteAverage: number;
   };
 
+  @ApiProperty()
   @Prop()
   numberOfEpisodes?: number;
 
+  @ApiProperty()
   @Prop()
   numberOfSeasons?: number;
 
+  @ApiProperty()
   @Prop()
   tagline?: string;
 
+  @ApiProperty()
   @Prop()
   productionCompanies?: {
     name: string;
@@ -104,6 +132,7 @@ export class TvShow {
     originCountry: string;
   }[];
 
+  @ApiProperty()
   @Prop()
   status?: string;
 }

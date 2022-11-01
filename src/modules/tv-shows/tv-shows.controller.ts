@@ -1,4 +1,4 @@
-import { Controller, Get, Header, UseGuards } from '@nestjs/common';
+import { Controller, Get, Header, Param, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -23,5 +23,13 @@ export class TvShowsController {
   @Header('Cache-Control', defaultCache)
   async getTrendingTvShows() {
     return await this.tvShowsService.getTrending();
+  }
+
+  @ApiOperation({ summary: 'Get tv show details' })
+  @ApiResponse({ status: 200, type: TvShow })
+  @Get(':tvShowId')
+  @Header('Cache-Control', defaultCache)
+  async getTvShowById(@Param('tvShowId') tvShowId: string) {
+    return await this.tvShowsService.getTvShowById(tvShowId);
   }
 }

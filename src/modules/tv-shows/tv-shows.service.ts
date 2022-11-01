@@ -1,6 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { endOfWeek, startOfWeek } from 'date-fns';
+import differenceInDays from 'date-fns/differenceInDays';
 import { Model } from 'mongoose';
 import { getImageUrl, numberSortByKey } from 'src/helpers';
 import { Trending, TrendingDocument } from 'src/schemas/trending.schema';
@@ -8,6 +14,8 @@ import { TvShow, TvShowDocument } from 'src/schemas/tv-show.schema';
 import { MEDIA_TYPE } from 'src/types';
 import { SeasonService } from '../season/season.service';
 import { TheMovieDbService } from '../the-movie-db/the-movie-db.service';
+import { DtoTvShow } from '../the-movie-db/types';
+import { defaulTvShowSchema } from './constants';
 
 @Injectable()
 export class TvShowsService {
@@ -111,6 +119,90 @@ export class TvShowsService {
       return tvShowFromDb;
     }
 
+    const dtoTvShow = await this.theMovieDbService.getTvShowById(tmdbId);
+
+    const newTvShow = this.normalizeDtoTvShow(dtoTvShow);
+
+    await newTvShow.save();
+
+    (dtoTvShow.seasons || []).map(
+      async ({ season_number }) =>
+        await this.seasonService.getSeasonByTmdbId(
+          newTvShow.tmdbId,
+          season_number,
+          newTvShow._id,
+        ),
+    );
+
+    return newTvShow;
+  }
+
+  async getTvShowById(tvShowId: string) {
+    const tvShow = await this.tvShowModel.findById(tvShowId, {
+      ...defaulTvShowSchema,
+      tmdbId: 1,
+    });
+
+    if (!tvShow) {
+      throw new NotFoundException('Série não encontrada');
+    }
+
+    if (differenceInDays(tvShow.updatedAt, new Date()) >= 7) {
+      await this.updateTvShow(tvShow);
+    }
+
+    return tvShow;
+  }
+
+  private async updateTvShow(tvShow: TvShowDocument) {
+    try {
+      const {
+        in_production,
+        last_air_date,
+        last_episode_to_air,
+        number_of_seasons,
+        number_of_episodes,
+        vote_average,
+        next_episode_to_air,
+        popularity,
+      } = await this.theMovieDbService.getTvShowById(tvShow.tmdbId);
+
+      tvShow.inProduction = in_production;
+      tvShow.numberOfEpisodes = number_of_episodes;
+      tvShow.numberOfSeasons = number_of_seasons;
+      tvShow.lastPopularity = popularity;
+      tvShow.lastRating = vote_average;
+      tvShow.lastAirDate = new Date(last_air_date);
+
+      if (last_episode_to_air) {
+        tvShow.lastEpisodeToAir = {
+          airDate: last_episode_to_air.air_date,
+          episodeNumber: last_episode_to_air.episode_number,
+          id: last_episode_to_air.id,
+          name: last_episode_to_air.name,
+          overview: last_episode_to_air.overview,
+          seasonNumber: last_episode_to_air.season_number,
+          voteAverage: last_episode_to_air.vote_average,
+        };
+      }
+
+      if (next_episode_to_air) {
+        tvShow.nextEpisodeToAir = {
+          airDate: next_episode_to_air.air_date,
+          episodeNumber: next_episode_to_air.episode_number,
+          id: next_episode_to_air.id,
+          name: next_episode_to_air.name,
+          overview: next_episode_to_air.overview,
+          seasonNumber: next_episode_to_air.season_number,
+          voteAverage: next_episode_to_air.vote_average,
+        };
+      }
+
+      await tvShow.save();
+    } catch {}
+  }
+
+  private normalizeDtoTvShow(dtoTvShow: DtoTvShow) {
     const {
       name,
       original_name,
@@ -135,8 +227,7 @@ export class TvShowsService {
       tagline,
       production_companies,
       status,
-      seasons,
-    } = await this.theMovieDbService.getTvShowById(tmdbId);
+    } = dtoTvShow;
 
     const newTvShow = new this.tvShowModel({
       inProduction: in_production,
@@ -186,17 +277,6 @@ export class TvShowsService {
       };
     }
 
-    const createdTvShow = await this.tvShowModel.create(newTvShow);
-
-    (seasons || []).map(
-      async ({ season_number }) =>
-        await this.seasonService.getSeasonByTmdbId(
-          createdTvShow.tmdbId,
-          season_number,
-          createdTvShow._id,
-        ),
-    );
-
-    return createdTvShow;
+    return newTvShow;
   }
 }
