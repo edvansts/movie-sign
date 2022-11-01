@@ -286,4 +286,14 @@ export class MoviesService {
       throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
   }
+
+  async getMovieById(movieId: string) {
+    const movie = await this.movieModel.findById(movieId);
+
+    if (!movie) {
+      throw new NotFoundException('Filme não encontrado');
+    }
+
+    return movie;
+  }
 }

@@ -47,4 +47,12 @@ export class MoviesController {
   async getMovieCast(@Param('movieId') movieId: string) {
     return await this.moviesService.getMovieCast(movieId);
   }
+
+  @Get(':movieId')
+  @ApiOperation({ summary: 'Get movie by id' })
+  @ApiResponse({ status: 200, type: Movie })
+  @Header('Cache-Control', defaultCache)
+  async getMovieById(@Param('movieId') movieId: string) {
+    return await this.moviesService.getMovieById(movieId);
+  }
 }
