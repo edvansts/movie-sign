@@ -1,0 +1,6 @@
+- [] Search by all, tvshows, movies and casts;
+- [] Avaliations module in database;
+- [] Create avaliation;
+- [] Mark tvshow and movies as seen;
+- [] List avaliations with pagination;
+- [] Calculate time watched person;
