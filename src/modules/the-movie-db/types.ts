@@ -1,3 +1,5 @@
+import { SEARCH_TYPES } from 'src/types';
+
 export type TTimeWindow = 'day' | 'week';
 
 export type TMovieProductionStatus =
@@ -227,4 +229,42 @@ export interface DtoSeason {
   id: string;
   poster_path?: string | null;
   season_number: number;
+}
+
+export type DtoSearchedPeople = {
+  profille_path?: string | null;
+  adult?: boolean;
+  id: number;
+  media_type: SEARCH_TYPES.people;
+  known_for: DtoSearchedTvShow | DtoSearchedMovie;
+  name?: string;
+  popularity?: number;
+};
+
+export interface DtoSearchedMovie extends MinimalMovie {
+  media_type: SEARCH_TYPES.movie;
+}
+
+export interface DtoSearchedTvShow {
+  poster_path?: string | null;
+  popularity?: string;
+  overview?: string;
+  backdrop_path?: string | null;
+  media_type: SEARCH_TYPES.tv;
+  vote_average?: number;
+  first_air_date?: string;
+  origin_country?: string[];
+  genre_ids?: number[];
+  original_language?: string;
+  vote_count?: number;
+  name?: string;
+  original_name?: string;
+  id?: number;
+}
+
+export interface DtoMultiSearch {
+  total_pages: number;
+  total_results: number;
+  page: number;
+  results: (DtoSearchedMovie | DtoSearchedTvShow | DtoSearchedPeople)[];
 }

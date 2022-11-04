@@ -100,4 +100,17 @@ export class TheMovieDbService {
       throw new Error(error);
     }
   }
+
+  async multiSearch(query: string, page?: number) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoSeason>(
+        `/search/multi`,
+        { params: { query, page } },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }

@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 import { Movie, MovieDocument } from 'src/schemas/movie.schema';
 import { Trending, TrendingDocument } from 'src/schemas/trending.schema';
 import { TheMovieDbService } from '../the-movie-db/the-movie-db.service';
-import { startOfWeek, endOfWeek } from 'date-fns';
+import { startOfWeek, endOfWeek, differenceInMonths } from 'date-fns';
 import { SearchByNameQueryParams } from './movies.validator';
 import { numberSortByKey } from 'src/helpers/array';
 import {
@@ -17,7 +17,7 @@ import {
   SearchQueriesDocument,
 } from 'src/schemas/searched-queries.schema';
 import { Cast, CastDocument } from 'src/schemas/cast.schema';
-import { MEDIA_TYPE, TDepartmentWorked } from 'src/types';
+import { MEDIA_TYPE, TDepartment } from 'src/types';
 import { getImageUrl, normalizeGender } from 'src/helpers';
 
 @Injectable()
@@ -62,17 +62,14 @@ export class MoviesService {
       const moviesList = (
         await Promise.all(
           movies.map(async (movie) => {
-            const { id, popularity, vote_average } = movie;
+            const { id } = movie;
 
             try {
               if (!id) {
                 return null;
               }
 
-              return await this.getMovieByTmdbId(id, {
-                popularity: popularity,
-                rating: vote_average,
-              });
+              return await this.getMovieByTmdbId(id);
             } catch (err) {
               return null;
             }
@@ -95,22 +92,14 @@ export class MoviesService {
     }
   }
 
-  private async getMovieByTmdbId(
-    tmdbId: number | string,
-    additionalData?: { popularity: number; rating: number },
-  ) {
+  async getMovieByTmdbId(tmdbId: number | string) {
     const dbMovie = await this.movieModel.findOne({
-      tmdbId: tmdbId,
+      tmdbId,
     });
 
     if (dbMovie) {
-      if (additionalData) {
-        dbMovie.update({
-          $set: {
-            lastPopularity: additionalData.popularity,
-            lastRating: additionalData.rating,
-          },
-        });
+      if (differenceInMonths(dbMovie.updatedAt, new Date()) >= 1) {
+        await this.updateMovie(dbMovie);
       }
 
       return dbMovie;
@@ -191,17 +180,14 @@ export class MoviesService {
     const extraMovies = (
       await Promise.all(
         externalSearchedMoviesNormalized.map(async (movie) => {
-          const { id, popularity, vote_average } = movie;
+          const { id } = movie;
 
           try {
             if (!id) {
               return null;
             }
 
-            return await this.getMovieByTmdbId(id, {
-              popularity: popularity,
-              rating: vote_average,
-            });
+            return await this.getMovieByTmdbId(id);
           } catch (err) {
             return null;
           }
@@ -258,7 +244,7 @@ export class MoviesService {
           order,
           character,
           tmdbId: id,
-          departmentWorked: known_for_department as TDepartmentWorked,
+          departmentWorked: known_for_department as TDepartment,
           gender: normalizeGender(gender),
           profileImage: getImageUrl(profile_path),
           movieId: movie._id,
@@ -295,5 +281,17 @@ export class MoviesService {
     }
 
     return movie;
+  }
+
+  async updateMovie(movie: MovieDocument) {
+    try {
+      const { vote_average, popularity } =
+        await this.theMovieDbService.getMovieById(movie.tmdbId);
+
+      movie.lastPopularity = popularity;
+      movie.lastRating = vote_average;
+
+      await movie.save();
+    } catch {}
   }
 }

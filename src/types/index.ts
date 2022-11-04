@@ -5,7 +5,7 @@ export enum MEDIA_TYPE {
   'person' = 'person',
 }
 
-export type TDepartmentWorked =
+export type TDepartment =
   | 'Sound'
   | 'Editing'
   | 'Production'
@@ -17,3 +17,9 @@ export type TDepartmentWorked =
   | 'Crew';
 
 export type TGender = 'F' | 'M' | 'NB';
+
+export enum SEARCH_TYPES {
+  people = 'people',
+  movie = 'movie',
+  tv = 'tv',
+}

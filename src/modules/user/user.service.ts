@@ -66,4 +66,14 @@ export class UserService {
 
     return await this.userModel.findOne({ [userKey]: user });
   }
+
+  async findByKeys(data: { username?: string; email?: string }) {
+    const { email, username } = data;
+
+    if (!email && !username) {
+      return null;
+    }
+
+    return await this.userModel.findOne({ email, username });
+  }
 }

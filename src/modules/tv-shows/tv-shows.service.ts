@@ -92,7 +92,7 @@ export class TvShowsService {
     }
   }
 
-  private async getTvShowByTmdbId(
+  async getTvShowByTmdbId(
     tmdbId: number | string,
     additionalData?: {
       lastPopularity: number;

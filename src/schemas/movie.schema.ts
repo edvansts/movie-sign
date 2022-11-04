@@ -9,6 +9,13 @@ export type MovieDocument = Movie & Document;
   versionKey: false,
 })
 export class Movie {
+  @Prop()
+  createdAt?: Date;
+
+  @ApiProperty()
+  @Prop()
+  updatedAt?: Date;
+
   @ApiProperty()
   @Prop({ required: true })
   title: string;

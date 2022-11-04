@@ -1,4 +1,7 @@
-- [] Search by all, tvshows, movies and casts;
+- [x] Create people collection;
+- [] Integrate people collection with cast;
+- [] Search by all, tvshows, movies and people;
+
 - [] Avaliations module in database;
 - [] Create avaliation;
 - [] Mark tvshow and movies as seen;
