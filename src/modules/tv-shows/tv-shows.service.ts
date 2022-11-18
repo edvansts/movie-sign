@@ -92,7 +92,7 @@ export class TvShowsService {
     }
   }
 
-  private async getTvShowByTmdbId(
+  async getTvShowByTmdbId(
     tmdbId: number | string,
     additionalData?: {
       lastPopularity: number;
@@ -147,9 +147,9 @@ export class TvShowsService {
       throw new NotFoundException('Série não encontrada');
     }
 
-    if (differenceInDays(tvShow.updatedAt, new Date()) >= 7) {
-      await this.updateTvShow(tvShow);
-    }
+    // if (differenceInDays(tvShow.updatedAt, new Date()) >= 7) {
+    //   await this.updateTvShow(tvShow);
+    // }
 
     return tvShow;
   }

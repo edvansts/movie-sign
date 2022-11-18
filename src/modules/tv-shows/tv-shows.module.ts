@@ -18,5 +18,6 @@ import { TvShowsService } from './tv-shows.service';
   ],
   controllers: [TvShowsController],
   providers: [TvShowsService],
+  exports: [TvShowsService],
 })
 export class TvShowsModule {}

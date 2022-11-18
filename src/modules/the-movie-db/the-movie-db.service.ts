@@ -4,6 +4,7 @@ import { MEDIA_TYPE } from 'src/types';
 import {
   DtoMovie,
   DtoMovieCredits,
+  DtoMultiSearch,
   DtoSearchMovie,
   DtoSeason,
   DtoTrending,
@@ -93,6 +94,19 @@ export class TheMovieDbService {
     try {
       const response = await this.httpService.axiosRef.get<DtoSeason>(
         `/tv/${tvShowId}/season/${seasonNumber}`,
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async multiSearch(query: string, page?: number) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoMultiSearch>(
+        `/search/multi`,
+        { params: { query, page } },
       );
 
       return response.data;
