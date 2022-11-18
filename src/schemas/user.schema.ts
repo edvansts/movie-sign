@@ -19,7 +19,7 @@ class User {
   @Prop()
   updatedAt?: Date;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   username: string;
 
   @Prop({ required: true })

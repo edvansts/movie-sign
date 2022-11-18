@@ -12,7 +12,8 @@ import { SearchService } from './search.service';
       { name: SearchResult.name, schema: SearchResultSchema },
     ]),
   ],
-  providers: [SearchService],
+  controllers: [],
   exports: [SearchService],
+  providers: [SearchService],
 })
 export class SearchModule {}

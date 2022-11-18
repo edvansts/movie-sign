@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import addWeeks from 'date-fns/addWeeks';
 import { Model } from 'mongoose';
-import { SearchResultDocument } from 'src/schemas/search-result.schema';
+import {
+  SearchResult,
+  SearchResultDocument,
+} from 'src/schemas/search-result.schema';
 import { SEARCH_TYPES } from 'src/types';
 import { AllSearchResult } from './types';
 
 @Injectable()
 export class SearchService {
   constructor(
+    @InjectModel(SearchResult.name)
     private readonly searchResultModel: Model<SearchResultDocument>,
   ) {}
 

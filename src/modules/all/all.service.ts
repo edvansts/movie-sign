@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { keysToCamel } from 'src/helpers';
 import { SearchResultDocument } from 'src/schemas/search-result.schema';
 import { SEARCH_TYPES } from 'src/types';
 import { MoviesService } from '../movies/movies.service';
@@ -17,15 +18,17 @@ export class AllService {
   ) {}
 
   async searchAll(params: SearchAllQueryParams) {
-    const search = this.searchService.findSearchResult(params.query);
+    const search = await this.searchService.findSearchResult(params.query);
 
     if (search) {
-      return await this.getDataFromSearchResult(search);
+      return await this.getDataFromSearchResult(search, params);
     }
 
     const searchResult = await this.theMovieDbService.multiSearch(params.query);
 
-    return searchResult;
+    const searchResultNormalized = keysToCamel(searchResult);
+
+    return searchResultNormalized;
   }
 
   private async getDataFromSearchResult(
@@ -58,7 +61,7 @@ export class AllService {
             const people = await this.moviesService.getMovieByTmdbId(
               result.tmdbId,
             );
-            response.results.push(movie);
+            response.results.push(people);
             break;
         }
       }),

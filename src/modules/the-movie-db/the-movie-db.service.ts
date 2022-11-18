@@ -4,6 +4,7 @@ import { MEDIA_TYPE } from 'src/types';
 import {
   DtoMovie,
   DtoMovieCredits,
+  DtoMultiSearch,
   DtoSearchMovie,
   DtoSeason,
   DtoTrending,
@@ -103,7 +104,7 @@ export class TheMovieDbService {
 
   async multiSearch(query: string, page?: number) {
     try {
-      const response = await this.httpService.axiosRef.get<DtoSeason>(
+      const response = await this.httpService.axiosRef.get<DtoMultiSearch>(
         `/search/multi`,
         { params: { query, page } },
       );
