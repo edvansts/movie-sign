@@ -42,8 +42,15 @@ export class Cast {
   tmdbId: string | null;
 
   @ApiProperty()
-  @Prop({ required: true, type: Types.ObjectId })
+  @Prop({ type: Types.ObjectId })
   movieId: ObjectId;
+
+  @ApiProperty()
+  @Prop({ type: Types.ObjectId })
+  tvShowId: ObjectId;
+
+  @ApiProperty({ required: true, type: Types.ObjectId })
+  peopleId: ObjectId;
 }
 
 export const CastSchema = SchemaFactory.createForClass(Cast);

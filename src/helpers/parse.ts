@@ -6,20 +6,22 @@ const toCamel = (key: string) => {
   });
 };
 
-export const keysToCamel = (o: any) => {
-  if (isObject(o)) {
+export const keysToCamel = <T>(value: T) => {
+  if (isObject(value)) {
     const n = {};
 
-    Object.keys(o).forEach((k) => {
-      n[toCamel(k)] = keysToCamel(o[k]);
+    Object.keys(value).forEach((k) => {
+      n[toCamel(k)] = keysToCamel(value[k]);
     });
 
     return n;
-  } else if (isArray(o)) {
-    return o.map((i) => {
+  }
+
+  if (isArray(value)) {
+    return (value as any).map((i) => {
       return keysToCamel(i);
     });
   }
 
-  return o;
+  return value;
 };

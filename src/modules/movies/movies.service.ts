@@ -16,19 +16,19 @@ import {
   SearchQueries,
   SearchQueriesDocument,
 } from 'src/schemas/searched-queries.schema';
-import { Cast, CastDocument } from 'src/schemas/cast.schema';
-import { MEDIA_TYPE, TDepartment } from 'src/types';
-import { getImageUrl, normalizeGender } from 'src/helpers';
+import { MEDIA_TYPE } from 'src/types';
+import { getImageUrl } from 'src/helpers';
+import { CastService } from '../cast/cast.service';
 
 @Injectable()
 export class MoviesService {
   constructor(
     @InjectModel(Movie.name) private movieModel: Model<MovieDocument>,
     @InjectModel(Trending.name) private trendingModel: Model<TrendingDocument>,
-    @InjectModel(Cast.name) private castModel: Model<CastDocument>,
     @InjectModel(SearchQueries.name)
     private searchedQueriesModel: Model<SearchQueriesDocument>,
     private readonly theMovieDbService: TheMovieDbService,
+    private readonly castService: CastService,
   ) {}
 
   async getTrendingMovies() {
@@ -209,67 +209,18 @@ export class MoviesService {
   }
 
   async getMovieCast(movieId: string) {
-    const movie = await this.movieModel.findById(movieId);
-
-    if (!movie) {
-      throw new NotFoundException('Filme não encontrado');
-    }
-
     try {
-      const movieCasts = await this.getCastsByMovieId(movie.id);
+      const movie = await this.movieModel.findById(movieId);
 
-      if (movieCasts.length > 0) {
-        return movieCasts;
+      if (!movie) {
+        throw new NotFoundException('Filme não encontrado');
       }
 
-      const { cast } = await this.theMovieDbService.getMovieCredits(
-        movie.tmdbId,
-      );
+      const movieCast = await this.castService.getCastByMovie(movie);
 
-      const newCasts = cast.map((people) => {
-        const {
-          name,
-          popularity,
-          gender,
-          id,
-          character,
-          known_for_department,
-          order,
-          profile_path,
-        } = people;
-
-        return new this.castModel({
-          name,
-          lastPopularity: popularity,
-          order,
-          character,
-          tmdbId: id,
-          departmentWorked: known_for_department as TDepartment,
-          gender: normalizeGender(gender),
-          profileImage: getImageUrl(profile_path),
-          movieId: movie._id,
-        });
-      });
-
-      this.castModel.insertMany(newCasts);
-
-      return newCasts;
+      return movieCast;
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  private async getCastsByMovieId(movieId: string) {
-    try {
-      const casts = await this.castModel
-        .find({
-          movieId,
-        })
-        .sort({ order: 'ascending' });
-
-      return casts;
-    } catch (err) {
-      throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
   }
 

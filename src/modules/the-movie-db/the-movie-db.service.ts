@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { keysToCamel } from 'src/helpers';
 import { MEDIA_TYPE } from 'src/types';
 import {
   DtoMovie,
@@ -13,6 +14,10 @@ import {
   MinimalTvShow,
   TTimeWindow,
 } from './types';
+
+const normalizeResponse = (response: string) => {
+  return keysToCamel(JSON.parse(response));
+};
 
 @Injectable()
 export class TheMovieDbService {
@@ -82,6 +87,12 @@ export class TheMovieDbService {
     try {
       const response = await this.httpService.axiosRef.get<DtoMovieCredits>(
         `/movie/${movieId}/credits`,
+        {
+          transformResponse: (response) => {
+            const newResponse = normalizeResponse(response);
+            return newResponse;
+          },
+        },
       );
 
       return response.data;
