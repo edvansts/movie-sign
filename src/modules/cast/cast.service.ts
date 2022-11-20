@@ -48,6 +48,7 @@ export class CastService {
             name,
             gender,
             profileImage,
+            lastPopularity: popularity,
           });
 
           return new this.castModel({
