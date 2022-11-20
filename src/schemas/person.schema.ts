@@ -19,7 +19,7 @@ export class Person {
   gender?: TGender;
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop()
   lastPopularity: number;
 
   @ApiProperty()

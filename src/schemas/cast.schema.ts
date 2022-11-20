@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, ObjectId, Types } from 'mongoose';
-import { TDepartment, TGender } from 'src/types';
+import { TDepartment } from 'src/types';
 
 export type CastDocument = Cast & Document;
 
@@ -13,10 +13,6 @@ export class Cast {
   @ApiProperty()
   @Prop({ required: true })
   name: string;
-
-  @ApiProperty()
-  @Prop()
-  gender?: TGender;
 
   @ApiProperty()
   @Prop({ required: true })
@@ -50,7 +46,7 @@ export class Cast {
   tvShowId: ObjectId;
 
   @ApiProperty({ required: true, type: Types.ObjectId })
-  peopleId: ObjectId;
+  personId: ObjectId;
 }
 
 export const CastSchema = SchemaFactory.createForClass(Cast);

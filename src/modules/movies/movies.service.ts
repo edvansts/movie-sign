@@ -19,6 +19,8 @@ import {
 import { MEDIA_TYPE } from 'src/types';
 import { getImageUrl } from 'src/helpers';
 import { CastService } from '../cast/cast.service';
+import { RatingService } from '../rating/rating.service';
+import { RatingBody } from '../rating/rating.validator';
 
 @Injectable()
 export class MoviesService {
@@ -29,6 +31,7 @@ export class MoviesService {
     private searchedQueriesModel: Model<SearchQueriesDocument>,
     private readonly theMovieDbService: TheMovieDbService,
     private readonly castService: CastService,
+    private readonly ratingService: RatingService,
   ) {}
 
   async getTrendingMovies() {
@@ -244,5 +247,11 @@ export class MoviesService {
 
       await movie.save();
     } catch {}
+  }
+
+  async rate(movieId: string, ratingBody: RatingBody) {
+    const movie = await this.getMovieById(movieId);
+
+    return await this.ratingService.rateMovie(movie, ratingBody);
   }
 }

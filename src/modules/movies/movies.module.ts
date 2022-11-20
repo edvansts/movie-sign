@@ -7,6 +7,7 @@ import {
 } from 'src/schemas/searched-queries.schema';
 import { Trending, TrendingSchema } from 'src/schemas/trending.schema';
 import { CastModule } from '../cast/cast.module';
+import { RatingModule } from '../rating/rating.module';
 import { TheMovieDbModule } from '../the-movie-db/the-movie-db.module';
 import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
@@ -20,6 +21,7 @@ import { MoviesService } from './movies.service';
     ]),
     CastModule,
     TheMovieDbModule,
+    RatingModule,
   ],
   controllers: [MoviesController],
   providers: [MoviesService],
