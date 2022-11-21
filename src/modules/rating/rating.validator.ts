@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, Max, Min } from 'class-validator';
+import { IsNumber, IsString, Max, Min } from 'class-validator';
 
 export class RatingBody {
   @ApiProperty({ minimum: 0, maximum: 5 })
@@ -9,5 +9,6 @@ export class RatingBody {
   grade: number;
 
   @ApiProperty({ description: 'Cast id of the favorite performance' })
+  @IsString()
   favoritePerformance: string;
 }

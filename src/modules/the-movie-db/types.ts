@@ -53,29 +53,30 @@ export type DtoTrending<T> = {
 };
 
 export type DtoMovie = {
-  poster_path?: string | null;
+  posterPath?: string | null;
   adult?: boolean;
   overview: string | null;
-  release_date?: string;
-  genre_ids?: string[];
-  original_title?: string;
-  original_language?: string;
+  releaseDate?: string;
+  genreIds?: string[];
+  originalTitle?: string;
+  originalLanguage?: string;
   title?: string;
   popularity?: number;
-  backdrop_path?: string | null;
-  vote_count?: number;
+  backdropPath?: string | null;
+  voteCount?: number;
   video?: boolean;
-  vote_average?: number;
+  voteAverage?: number;
   budget: number;
   id: number;
-  imdb_id: string | null;
-  production_companies: {
+  imdbId: string | null;
+  productionCompanies: {
     name: string;
     id: number;
-    logo_path: string | null;
-    origin_country: string;
+    logoPath: string | null;
+    originCountry: string;
   }[];
   status: TMovieProductionStatus;
+  runtime: number | null;
 };
 
 export type DtoTvShow = {

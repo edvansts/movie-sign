@@ -50,6 +50,9 @@ export class TheMovieDbService {
     try {
       const response = await this.httpService.axiosRef.get<DtoMovie>(
         `/movie/${id}`,
+        {
+          transformResponse: normalizeResponse,
+        },
       );
 
       return response.data;

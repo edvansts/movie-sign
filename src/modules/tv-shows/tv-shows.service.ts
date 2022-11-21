@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { endOfWeek, startOfWeek } from 'date-fns';
-import differenceInDays from 'date-fns/differenceInDays';
 import { Model } from 'mongoose';
 import { getImageUrl, numberSortByKey } from 'src/helpers';
 import { Trending, TrendingDocument } from 'src/schemas/trending.schema';

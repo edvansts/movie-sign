@@ -1,4 +1,12 @@
-import { Controller, Get, Header, Param, UseGuards } from '@nestjs/common';
+import {
+  CacheInterceptor,
+  Controller,
+  Get,
+  Header,
+  Param,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -14,6 +22,7 @@ import { TvShowsService } from './tv-shows.service';
 @ApiTags('tv-shows')
 @Controller('tv-shows')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(CacheInterceptor)
 export class TvShowsController {
   constructor(private readonly tvShowsService: TvShowsService) {}
 

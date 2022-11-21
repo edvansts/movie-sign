@@ -15,7 +15,7 @@ import { numberSortByKey } from 'src/helpers/array';
 import {
   SearchQueries,
   SearchQueriesDocument,
-} from 'src/schemas/searched-queries.schema';
+} from 'src/schemas/search-queries.schema';
 import { MEDIA_TYPE } from 'src/types';
 import { getImageUrl } from 'src/helpers';
 import { CastService } from '../cast/cast.service';
@@ -110,30 +110,32 @@ export class MoviesService {
 
     const {
       title,
-      original_title,
-      vote_average,
-      release_date,
+      originalTitle,
+      voteAverage,
+      releaseDate,
       popularity,
-      poster_path,
-      imdb_id,
+      posterPath,
+      imdbId,
       id: newTmdbId,
       overview,
-      backdrop_path,
+      backdropPath,
       adult,
+      runtime,
     } = await this.theMovieDbService.getMovieById(tmdbId);
 
     const newMovieModel = new this.movieModel({
-      title: title || original_title,
-      lastRating: vote_average,
-      releaseDate: new Date(release_date),
+      title: title || originalTitle,
+      lastRating: voteAverage,
+      releaseDate: new Date(releaseDate),
       lastPopularity: popularity,
-      imdbId: imdb_id,
+      imdbId,
       tmdbId: newTmdbId,
-      posterImage: poster_path ?? getImageUrl(poster_path),
-      backdropImage: backdrop_path ?? getImageUrl(backdrop_path),
+      posterImage: posterPath ?? getImageUrl(posterPath),
+      backdropImage: backdropPath ?? getImageUrl(backdropPath),
       overview: overview || '',
-      originalTitle: original_title || '',
+      originalTitle: originalTitle || '',
       adult,
+      runtime,
     });
 
     const createdMovie = await this.movieModel.create(newMovieModel);
@@ -239,11 +241,11 @@ export class MoviesService {
 
   async updateMovie(movie: MovieDocument) {
     try {
-      const { vote_average, popularity } =
+      const { voteAverage, popularity } =
         await this.theMovieDbService.getMovieById(movie.tmdbId);
 
       movie.lastPopularity = popularity;
-      movie.lastRating = vote_average;
+      movie.lastRating = voteAverage;
 
       await movie.save();
     } catch {}

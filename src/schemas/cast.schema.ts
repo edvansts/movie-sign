@@ -15,10 +15,6 @@ export class Cast {
   name: string;
 
   @ApiProperty()
-  @Prop({ required: true })
-  lastPopularity: number;
-
-  @ApiProperty()
   @Prop()
   profileImage: string | null;
 
@@ -46,6 +42,7 @@ export class Cast {
   tvShowId: ObjectId;
 
   @ApiProperty({ required: true, type: Types.ObjectId })
+  @Prop({ type: Types.ObjectId })
   personId: ObjectId;
 }
 

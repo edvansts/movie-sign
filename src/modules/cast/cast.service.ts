@@ -28,7 +28,7 @@ export class CastService {
         movie.tmdbId,
       );
 
-      const newCasts = Promise.all(
+      const newCasts = await Promise.all(
         cast.map(async (cast) => {
           const {
             name,
@@ -60,12 +60,12 @@ export class CastService {
             departmentWorked: knownForDepartment as TDepartment,
             profileImage,
             movieId: movie._id,
-            personId: person.id,
+            personId: person._id,
           });
         }),
       );
 
-      this.castModel.insertMany(newCasts);
+      await this.castModel.insertMany(newCasts);
 
       return newCasts;
     } catch (err) {

@@ -57,6 +57,10 @@ export class Movie {
   @ApiProperty()
   @Prop()
   adult?: boolean;
+
+  @ApiProperty({ type: Number || null })
+  @Prop({ type: Number || null })
+  runtime: number | null;
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);

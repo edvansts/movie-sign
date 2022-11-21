@@ -4,7 +4,7 @@ import { Movie, MovieSchema } from 'src/schemas/movie.schema';
 import {
   SearchQueries,
   SearchQueriesSchema,
-} from 'src/schemas/searched-queries.schema';
+} from 'src/schemas/search-queries.schema';
 import { Trending, TrendingSchema } from 'src/schemas/trending.schema';
 import { CastModule } from '../cast/cast.module';
 import { RatingModule } from '../rating/rating.module';
