@@ -5,7 +5,7 @@ import { isEmail } from 'class-validator';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { LoginBody } from '../auth/auth.validator';
-import { RegisterBody } from './user.validator';
+import { RegisterBody, RegisterWithGoogle } from './user.validator';
 
 @Injectable()
 export class UserService {
@@ -14,11 +14,9 @@ export class UserService {
   async create(payload: RegisterBody) {
     const { email, username } = payload;
 
-    const user = await this.userModel.exists({
-      $or: [{ email }, { username }],
-    });
+    const userExists = this.userExists({ email, username });
 
-    if (user) {
+    if (userExists) {
       throw new HttpException('Usuário já existe', HttpStatus.BAD_REQUEST);
     }
 
@@ -27,6 +25,38 @@ export class UserService {
     await createdUser.save();
 
     return this.sanitizeUser(createdUser.toObject());
+  }
+
+  async createWithGoogle(payload: RegisterWithGoogle) {
+    const { email, username } = payload;
+
+    const userExists = await this.userExists({ email, username });
+
+    if (userExists) {
+      throw new HttpException('Usuário já existe', HttpStatus.BAD_REQUEST);
+    }
+
+    const createdUser = new this.userModel({
+      ...payload,
+      isRegisteredWithGoogle: true,
+    });
+
+    await createdUser.save();
+
+    return this.sanitizeUser(createdUser.toObject());
+  }
+
+  private async userExists(data: { username?: string; email?: string }) {
+    const { email, username } = data;
+
+    const user = await this.userModel.findOne(
+      {
+        $or: [{ email }, { username }],
+      },
+      { _id: 1 },
+    );
+
+    return !!user;
   }
 
   async findByLogin(userDto: LoginBody) {

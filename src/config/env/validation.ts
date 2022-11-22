@@ -27,6 +27,23 @@ class EnvironmentVariables {
 
   @IsString()
   THE_MOVIE_DB_API_KEY: string;
+
+  @IsString()
+  PASSWORD_SECRET: string;
+  @IsString()
+  USER_AUTH_SECRET: string;
+
+  @IsString()
+  REDIS_HOST: string;
+  @IsString()
+  REDIS_PORT: string;
+  @IsString()
+  REDIS_PASSWORD: string;
+
+  @IsString()
+  GOOGLE_AUTH_CLIENT_ID: string;
+  @IsString()
+  GOOGLE_AUTH_CLIENT_SECRET: string;
 }
 
 export function validate(config: Record<string, unknown>) {

@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/config/decorators/is-public';
 import { RegisterBody } from '../user/user.validator';
 import { AuthService } from './auth.service';
-import { LoginBody } from './auth.validator';
+import { LoginBody, SignWithGoogleBody } from './auth.validator';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -20,5 +20,11 @@ export class AuthController {
   @Public()
   async login(@Body() userDto: LoginBody) {
     return this.authService.login(userDto);
+  }
+
+  @Post('google')
+  @Public()
+  async signWithGoogle(@Body() body: SignWithGoogleBody) {
+    return this.authService.signWithGoogle(body);
   }
 }

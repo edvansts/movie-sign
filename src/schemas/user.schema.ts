@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { hash } from 'bcrypt';
+import { Exclude } from 'class-transformer';
 
 @Schema({
   timestamps: true,
@@ -10,8 +11,9 @@ class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true })
-  password: string;
+  @Prop()
+  @Exclude()
+  password?: string;
 
   @Prop()
   createdAt?: Date;
@@ -24,6 +26,12 @@ class User {
 
   @Prop({ required: true })
   name: string;
+
+  @Prop({ default: false })
+  isRegisteredWithGoogle: boolean;
+
+  @Prop({ default: false })
+  isEmailValidated: boolean;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);

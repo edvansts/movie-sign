@@ -7,7 +7,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Debug Nest Framework",
       "runtimeArgs": [
         "--nolazy",
         "-r",
@@ -19,6 +19,7 @@
       "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceRoot}",
       "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
       "sourceMaps": true
     }
   ]

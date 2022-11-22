@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Length, IsString } from 'class-validator';
+import { Length, IsString, IsNotEmpty } from 'class-validator';
 
 export class LoginBody {
   @ApiProperty()
@@ -10,4 +10,11 @@ export class LoginBody {
   @IsString()
   @Length(8, 30)
   password: string;
+}
+
+export class SignWithGoogleBody {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  token: string;
 }

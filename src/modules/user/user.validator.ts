@@ -22,3 +22,18 @@ export class RegisterBody {
   @Length(4, 50)
   name: string;
 }
+
+export class RegisterWithGoogle {
+  @ApiProperty()
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
+  username: string;
+
+  @ApiProperty()
+  @IsString()
+  name: string;
+}
