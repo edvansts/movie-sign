@@ -57,7 +57,7 @@ export type DtoMovie = {
   adult?: boolean;
   overview: string | null;
   releaseDate?: string;
-  genreIds?: string[];
+  genres?: { id: number; name: string }[];
   originalTitle?: string;
   originalLanguage?: string;
   title?: string;

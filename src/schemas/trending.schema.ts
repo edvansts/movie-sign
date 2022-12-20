@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
 import { MEDIA_TYPE } from 'src/types';
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: true })
 class Trending {
   @Prop({ required: true })
   type: MEDIA_TYPE;
@@ -15,6 +15,9 @@ class Trending {
 
   @Prop({ required: true })
   list: ObjectId[];
+
+  @Prop({ type: Date, expires: '12 w' })
+  createdAt?: Date;
 }
 
 const TrendingSchema = SchemaFactory.createForClass(Trending);

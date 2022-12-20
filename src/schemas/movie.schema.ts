@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type MovieDocument = Movie & Document;
 
@@ -61,6 +61,10 @@ export class Movie {
   @ApiProperty({ type: Number || null })
   @Prop({ type: Number || null })
   runtime: number | null;
+
+  @ApiProperty({ type: Types.Array<string>, default: [] })
+  @Prop({ type: Array<string>, default: [] })
+  genres: string[];
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);

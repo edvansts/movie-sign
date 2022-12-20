@@ -8,7 +8,7 @@ type IResult = {
   knownFor?: { type: SEARCH_TYPES.movie | SEARCH_TYPES.tv; tmdbId: number };
 };
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: true })
 class SearchResult {
   @Prop({ required: true })
   startedAt: Date;
@@ -27,6 +27,9 @@ class SearchResult {
 
   @Prop()
   query: string;
+
+  @Prop({ type: Date, expires: '12 w' })
+  createdAt?: Date;
 }
 
 const SearchResultSchema = SchemaFactory.createForClass(SearchResult);

@@ -1,6 +1,5 @@
 import {
   Body,
-  CacheInterceptor,
   CacheTTL,
   Controller,
   Get,
@@ -15,7 +14,9 @@ import {
   ApiTags,
   ApiResponse,
   ApiOperation,
+  ApiOkResponse,
 } from '@nestjs/swagger';
+import { CustomCacheInterceptor } from 'src/config/interceptors/custom-cache-interceptor';
 import { Cast } from 'src/schemas/cast.schema';
 import { Movie } from 'src/schemas/movie.schema';
 import { Rating } from 'src/schemas/rating.schema';
@@ -28,9 +29,11 @@ import { SearchByNameQueryParams } from './movies.validator';
 @ApiTags('movies')
 @Controller('movies')
 @UseGuards(JwtAuthGuard)
-@UseInterceptors(CacheInterceptor)
+@UseInterceptors(CustomCacheInterceptor)
 export class MoviesController {
-  constructor(private readonly moviesService: MoviesService) {}
+  constructor(
+    private readonly moviesService: MoviesService, // private readonly mailService: MailService,
+  ) {}
 
   @ApiOperation({ summary: 'Get this week trending movies;' })
   @ApiResponse({ status: 200, type: [Movie] })
@@ -62,9 +65,20 @@ export class MoviesController {
     return await this.moviesService.rate(movieId, ratingBody);
   }
 
+  // @NoCache()
+  // @Get('mail')
+  // @HttpCode(204)
+  // async getEmail(): Promise<void> {
+  //   try {
+  //     await this.mailService.sendToEdvan();
+  //   } catch (err) {
+  //     throw new InternalServerErrorException(err);
+  //   }
+  // }
+
   @Get(':movieId')
   @ApiOperation({ summary: 'Get movie by id' })
-  @ApiResponse({ status: 200, type: Movie })
+  @ApiOkResponse()
   async getMovieById(@Param('movieId') movieId: string) {
     return await this.moviesService.getMovieById(movieId);
   }

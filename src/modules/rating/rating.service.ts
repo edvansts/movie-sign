@@ -1,8 +1,7 @@
 import { ConflictException, Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { MovieDocument } from 'src/schemas/movie.schema';
+import { Model, ObjectId, Types } from 'mongoose';
 import { Rating, RatingDocument } from 'src/schemas/rating.schema';
 import { RequestWithUser } from 'src/types/services';
 import { CastService } from '../cast/cast.service';
@@ -17,12 +16,11 @@ export class RatingService {
     private readonly castService: CastService,
   ) {}
 
-  async rateMovie(movie: MovieDocument, ratingBody: RatingBody) {
-    const userId = this.request.user.id;
-    const movieId = movie.id;
+  async rateMovie(movieId: ObjectId, ratingBody: RatingBody) {
+    const userId = new Types.ObjectId(this.request.user.id);
 
-    const userHasRatingCreated = this.ratingModel.exists({
-      movieId: movie.id,
+    const userHasRatingCreated = await this.ratingModel.exists({
+      movieId,
       userId,
     });
 
@@ -41,7 +39,7 @@ export class RatingService {
       movieId,
       grade,
       favoritePerformance: {
-        castId: cast.id,
+        castId: cast._id,
         castImage: cast.profileImage,
         castName: cast.character,
 

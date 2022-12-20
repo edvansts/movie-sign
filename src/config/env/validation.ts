@@ -14,7 +14,7 @@ enum Environment {
   Stage = 'stage',
 }
 
-class EnvironmentVariables {
+export class EnvironmentVariables {
   @IsEnum(Environment)
   NODE_ENV: Environment;
 
@@ -44,6 +44,24 @@ class EnvironmentVariables {
   GOOGLE_AUTH_CLIENT_ID: string;
   @IsString()
   GOOGLE_AUTH_CLIENT_SECRET: string;
+
+  // @IsString()
+  // MAIL_HOST: string;
+  @IsString()
+  MAIL_USER: string;
+  // @IsString()
+  // MAIL_PASSWORD: string;
+  // @IsString()
+  // MAIL_FROM: string;
+  // @IsString()
+  // MAIL_TRANSPORT: string;
+
+  @IsString()
+  MAILGUN_API_KEY: string;
+  @IsString()
+  MAILGUN_BASE_URL: string;
+  @IsString()
+  MAILGUN_DOMAIN: string;
 }
 
 export function validate(config: Record<string, unknown>) {

@@ -1,11 +1,12 @@
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Movie, MovieDocument } from 'src/schemas/movie.schema';
 import { Trending, TrendingDocument } from 'src/schemas/trending.schema';
 import { TheMovieDbService } from '../the-movie-db/the-movie-db.service';
@@ -21,6 +22,10 @@ import { getImageUrl } from 'src/helpers';
 import { CastService } from '../cast/cast.service';
 import { RatingService } from '../rating/rating.service';
 import { RatingBody } from '../rating/rating.validator';
+import { REQUEST } from '@nestjs/core';
+import type { RequestWithUser } from 'src/types/services';
+import { IMovieWithRating } from './types';
+import { isNotEmptyObject } from 'class-validator';
 
 @Injectable()
 export class MoviesService {
@@ -32,6 +37,7 @@ export class MoviesService {
     private readonly theMovieDbService: TheMovieDbService,
     private readonly castService: CastService,
     private readonly ratingService: RatingService,
+    @Inject(REQUEST) private request: RequestWithUser,
   ) {}
 
   async getTrendingMovies() {
@@ -102,7 +108,7 @@ export class MoviesService {
 
     if (dbMovie) {
       if (differenceInMonths(dbMovie.updatedAt, new Date()) >= 1) {
-        await this.updateMovie(dbMovie);
+        await this.updateMovieInfo(dbMovie);
       }
 
       return dbMovie;
@@ -230,7 +236,32 @@ export class MoviesService {
   }
 
   async getMovieById(movieId: string) {
-    const movie = await this.movieModel.findById(movieId);
+    const userId = new Types.ObjectId(this.request.user.id);
+    const movieObjectId = new Types.ObjectId(movieId);
+
+    const [movie] = await this.movieModel.aggregate<IMovieWithRating>([
+      { $match: { _id: movieObjectId } },
+      {
+        $lookup: {
+          from: 'ratings',
+          pipeline: [{ $match: { movieId: movieObjectId, userId } }],
+          as: 'rating',
+        },
+      },
+      {
+        $unwind: { path: '$rating', preserveNullAndEmptyArrays: true },
+      },
+    ]);
+
+    if (!isNotEmptyObject(movie)) {
+      throw new NotFoundException('Filme não encontrado');
+    }
+
+    return movie;
+  }
+
+  async getMovieId(movieId: string) {
+    const movie = await this.movieModel.findById(movieId, { _id: 1 });
 
     if (!movie) {
       throw new NotFoundException('Filme não encontrado');
@@ -239,21 +270,27 @@ export class MoviesService {
     return movie;
   }
 
-  async updateMovie(movie: MovieDocument) {
+  async updateMovieInfo(movie: MovieDocument) {
     try {
-      const { voteAverage, popularity } =
-        await this.theMovieDbService.getMovieById(movie.tmdbId);
+      const {
+        voteAverage,
+        popularity,
+        runtime,
+        genres = [],
+      } = await this.theMovieDbService.getMovieById(movie.tmdbId);
 
       movie.lastPopularity = popularity;
       movie.lastRating = voteAverage;
+      movie.runtime = runtime;
+      movie.genres = genres.map((genre) => genre.name);
 
       await movie.save();
     } catch {}
   }
 
   async rate(movieId: string, ratingBody: RatingBody) {
-    const movie = await this.getMovieById(movieId);
+    const movie = await this.getMovieId(movieId);
 
-    return await this.ratingService.rateMovie(movie, ratingBody);
+    return await this.ratingService.rateMovie(movie._id, ratingBody);
   }
 }

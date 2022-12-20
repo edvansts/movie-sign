@@ -2,12 +2,14 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { hash } from 'bcrypt';
 import { Exclude } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Schema({
   timestamps: true,
   versionKey: false,
 })
 class User {
+  @ApiProperty()
   @Prop({ required: true, unique: true })
   email: string;
 
@@ -21,15 +23,18 @@ class User {
   @Prop()
   updatedAt?: Date;
 
+  @ApiProperty()
   @Prop({ required: true, unique: true })
   username: string;
 
+  @ApiProperty()
   @Prop({ required: true })
   name: string;
 
   @Prop({ default: false })
   isRegisteredWithGoogle: boolean;
 
+  @ApiProperty()
   @Prop({ default: false })
   isEmailValidated: boolean;
 }
