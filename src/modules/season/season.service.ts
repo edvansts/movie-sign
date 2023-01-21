@@ -69,4 +69,18 @@ export class SeasonService {
       console.log(err);
     }
   }
+
+  async getSeasonsByTvShowId(tvShowId: ObjectId) {
+    try {
+      const findedSeasons = await this.seasonModel
+        .find({
+          tvShowId,
+        })
+        .sort({ seasonNumber: 'ascending' });
+
+      return findedSeasons;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }

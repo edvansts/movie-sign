@@ -14,6 +14,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { defaultCache } from 'src/constants';
+import { Season } from 'src/schemas/season.schema';
 import { TvShow } from 'src/schemas/tv-show.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TvShowsService } from './tv-shows.service';
@@ -32,6 +33,14 @@ export class TvShowsController {
   @Header('Cache-Control', defaultCache)
   async getTrendingTvShows() {
     return await this.tvShowsService.getTrending();
+  }
+
+  @ApiOperation({ summary: 'Get tv show seasons' })
+  @ApiResponse({ status: 200, type: [Season] })
+  @Get(':tvShowId/seasons')
+  @Header('Cache-Control', defaultCache)
+  async getTvShowBySeasons(@Param('tvShowId') tvShowId: string) {
+    return await this.tvShowsService.getSeasons(tvShowId);
   }
 
   @ApiOperation({ summary: 'Get tv show details' })

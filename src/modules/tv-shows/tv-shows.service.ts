@@ -278,4 +278,12 @@ export class TvShowsService {
 
     return newTvShow;
   }
+
+  async getSeasons(tvShowId: string) {
+    const tvShow = await this.getTvShowById(tvShowId);
+
+    const seasons = this.seasonService.getSeasonsByTvShowId(tvShow._id);
+
+    return seasons;
+  }
 }
