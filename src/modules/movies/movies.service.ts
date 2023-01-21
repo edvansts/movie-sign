@@ -293,4 +293,62 @@ export class MoviesService {
 
     return await this.ratingService.rateMovie(movie._id, ratingBody);
   }
+
+  async getTopRated() {
+    try {
+      const { results: movies } =
+        await this.theMovieDbService.getTopRatedMovies();
+
+      const moviesList = (
+        await Promise.all(
+          movies.map(async (movie) => {
+            const { id } = movie;
+
+            try {
+              if (!id) {
+                return null;
+              }
+
+              return await this.getMovieByTmdbId(id);
+            } catch (err) {
+              return null;
+            }
+          }),
+        )
+      ).filter((movie) => !!movie);
+
+      return moviesList;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getMoviesInTheatres() {
+    try {
+      const { results: movies } =
+        await this.theMovieDbService.getMoviesInTheatres();
+
+      const moviesList = (
+        await Promise.all(
+          movies.map(async (movie) => {
+            const { id } = movie;
+
+            try {
+              if (!id) {
+                return null;
+              }
+
+              return await this.getMovieByTmdbId(id);
+            } catch (err) {
+              return null;
+            }
+          }),
+        )
+      ).filter((movie) => !!movie);
+
+      return moviesList;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

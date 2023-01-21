@@ -5,9 +5,11 @@ import { MEDIA_TYPE } from 'src/types';
 import {
   DtoMovie,
   DtoMovieCredits,
+  DtoMoviesInTheatre,
   DtoMultiSearch,
   DtoSearchMovie,
   DtoSeason,
+  DtoTopRatedMovies,
   DtoTrending,
   DtoTvShow,
   MinimalMovie,
@@ -121,6 +123,32 @@ export class TheMovieDbService {
       const response = await this.httpService.axiosRef.get<DtoMultiSearch>(
         `/search/multi`,
         { params: { query, page } },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getMoviesInTheatres(page = 1, region?: string) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoMoviesInTheatre>(
+        `/movie/now_playing`,
+        { params: { page, region } },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getTopRatedMovies(page = 1, region?: string) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoTopRatedMovies>(
+        `/movie/top_rated`,
+        { params: { page, region } },
       );
 
       return response.data;

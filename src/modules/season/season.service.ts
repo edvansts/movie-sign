@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { valueOrUndefined } from 'src/helpers';
-import { IEpisode, Season, SeasonDocument } from 'src/schemas/season.schema';
+import { Episode, Season, SeasonDocument } from 'src/schemas/season.schema';
 import { TheMovieDbService } from '../the-movie-db/the-movie-db.service';
 
 @Injectable()
@@ -51,7 +51,7 @@ export class SeasonService {
         tvShowId,
       });
 
-      newSeason.episodes = (episodes || []).map<IEpisode>(
+      newSeason.episodes = (episodes || []).map<Episode>(
         ({ air_date, episode_number, id, name, overview, vote_average }) => ({
           episodeNumber: episode_number,
           name,

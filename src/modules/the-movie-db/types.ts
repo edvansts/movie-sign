@@ -269,3 +269,23 @@ export interface DtoMultiSearch {
   page: number;
   results: (DtoSearchedMovie | DtoSearchedTvShow | DtoSearchedPeople)[];
 }
+
+export interface DtoMoviesInTheatre {
+  results: MinimalMovie[];
+  totalResults: number;
+  totalPages: number;
+  dates: {
+    maximum: string;
+    minimum: string;
+  };
+}
+
+export interface DtoTopRatedMovies {
+  results: MinimalMovie[];
+  totalResults: number;
+  totalPages: number;
+  dates: {
+    maximum: string;
+    minimum: string;
+  };
+}

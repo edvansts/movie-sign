@@ -43,6 +43,22 @@ export class MoviesController {
     return await this.moviesService.getTrendingMovies();
   }
 
+  @ApiOperation({ summary: 'Get this week movies in theatres;' })
+  @ApiResponse({ status: 200, type: [Movie] })
+  @Get('in-theatres')
+  @CacheTTL(60 * 30)
+  async getMoviesInTheatres() {
+    return await this.moviesService.getMoviesInTheatres();
+  }
+
+  @ApiOperation({ summary: 'Get this week top rated movies;' })
+  @ApiResponse({ status: 200, type: [Movie] })
+  @Get('top-rated')
+  @CacheTTL(60 * 30)
+  async getTopRatedMovies() {
+    return await this.moviesService.getTopRated();
+  }
+
   @Get('search')
   async searchByName(@Query() params: SearchByNameQueryParams) {
     return await this.moviesService.searchMoviesByQuery(params);
