@@ -12,6 +12,7 @@ export class Episode {
     public overview?: string,
     public lastRating?: number,
     public airDate?: Date,
+    public posterImage?: string | null,
   ) {}
 }
 

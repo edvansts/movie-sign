@@ -25,7 +25,7 @@ import { RatingBody } from '../rating/rating.validator';
 import { MoviesService } from './movies.service';
 import { SearchByNameQueryParams } from './movies.validator';
 
-@ApiBearerAuth()
+@ApiBearerAuth('Bearer')
 @ApiTags('movies')
 @Controller('movies')
 @UseGuards(JwtAuthGuard)

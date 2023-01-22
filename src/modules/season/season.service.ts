@@ -52,13 +52,22 @@ export class SeasonService {
       });
 
       newSeason.episodes = (episodes || []).map<Episode>(
-        ({ air_date, episode_number, id, name, overview, vote_average }) => ({
+        ({
+          air_date,
+          episode_number,
+          id,
+          name,
+          overview,
+          vote_average,
+          still_path,
+        }) => ({
           episodeNumber: episode_number,
           name,
           tmdbId: id,
           airDate: valueOrUndefined(new Date(air_date)),
           overview: overview || '',
           lastRating: vote_average,
+          posterImage: still_path,
         }),
       );
 

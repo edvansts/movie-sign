@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SecuritySchemeObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -14,6 +15,14 @@ async function bootstrap() {
     .setTitle('Movie Sign')
     .setDescription('The movie sign api documentation')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'oauth2',
+        schema: 'Bearer',
+        bearerFormat: 'Token',
+      } as SecuritySchemeObject,
+      'Bearer',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
