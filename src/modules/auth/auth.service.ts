@@ -66,9 +66,7 @@ export class AuthService {
 
       const email = tokenInfo.email;
 
-      const user = await this.userService.findByKeys({ email });
-
-      console.log(user);
+      const user = await this.userService.findByEmail(email);
 
       if (!user) {
         return this.registerWithGoogle(token, email);

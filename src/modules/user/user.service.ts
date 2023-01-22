@@ -123,6 +123,14 @@ export class UserService {
       return null;
     }
 
-    return await this.userModel.findOne({ email, username });
+    const user = await this.userModel.findOne({ email, username });
+
+    return user;
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.userModel.findOne({ email });
+
+    return user;
   }
 }
