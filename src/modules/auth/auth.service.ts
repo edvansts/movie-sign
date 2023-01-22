@@ -72,7 +72,7 @@ export class AuthService {
         return this.registerWithGoogle(token, email);
       }
 
-      return this.handleRegisteredGoogleUser(user);
+      return this.handleRegisteredGoogleUser(user.toObject());
     } catch (error) {
       throw error;
     }

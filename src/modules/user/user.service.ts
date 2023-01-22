@@ -104,6 +104,8 @@ export class UserService {
       return null;
     }
 
-    return await this.userModel.findOne({ email, username });
+    return await this.userModel.findOne({
+      $or: [{ email }, { username }],
+    });
   }
 }
