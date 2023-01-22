@@ -14,7 +14,7 @@ export class UserService {
   async create(payload: RegisterBody) {
     const { email, username } = payload;
 
-    const userExists = this.userExists({ email, username });
+    const userExists = await this.userExists({ email, username });
 
     if (userExists) {
       throw new HttpException('Usuário já existe', HttpStatus.BAD_REQUEST);

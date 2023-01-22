@@ -14,7 +14,7 @@ export class RegisterBody {
 
   @ApiProperty()
   @IsString()
-  @Length(8, 30)
+  @Length(4, 30)
   username: string;
 
   @ApiProperty()

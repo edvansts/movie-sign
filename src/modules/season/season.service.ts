@@ -71,9 +71,9 @@ export class SeasonService {
         }),
       );
 
-      const createdSeason = await this.seasonModel.create(newSeason);
+      await newSeason.save();
 
-      return createdSeason;
+      return newSeason;
     } catch (err) {
       console.log(err);
     }
