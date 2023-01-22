@@ -68,6 +68,8 @@ export class AuthService {
 
       const user = await this.userService.findByKeys({ email });
 
+      console.log(user);
+
       if (!user) {
         return this.registerWithGoogle(token, email);
       }

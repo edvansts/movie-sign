@@ -10,8 +10,10 @@ import {
   DtoSearchMovie,
   DtoSeason,
   DtoTopRatedMovies,
+  DtoTopRatedTvShows,
   DtoTrending,
   DtoTvShow,
+  DtoTvShowsOnTheAir,
   MinimalMovie,
   MinimalTvShow,
   TTimeWindow,
@@ -149,6 +151,32 @@ export class TheMovieDbService {
       const response = await this.httpService.axiosRef.get<DtoTopRatedMovies>(
         `/movie/top_rated`,
         { params: { page, region } },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getTopRatedTvShows(page = 1) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoTopRatedTvShows>(
+        `/tv/top_rated`,
+        { params: { page } },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getTvShowsOnTheAir(page = 1) {
+    try {
+      const response = await this.httpService.axiosRef.get<DtoTvShowsOnTheAir>(
+        `/tv/on_the_air`,
+        { params: { page } },
       );
 
       return response.data;

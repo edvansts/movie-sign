@@ -271,9 +271,10 @@ export interface DtoMultiSearch {
 }
 
 export interface DtoMoviesInTheatre {
-  results: MinimalMovie[];
-  totalResults: number;
-  totalPages: number;
+  page: number;
+  results: MinimalTvShow[];
+  total_results: number;
+  total_pages: number;
   dates: {
     maximum: string;
     minimum: string;
@@ -281,11 +282,26 @@ export interface DtoMoviesInTheatre {
 }
 
 export interface DtoTopRatedMovies {
-  results: MinimalMovie[];
-  totalResults: number;
-  totalPages: number;
+  page: number;
+  results: MinimalTvShow[];
+  total_results: number;
+  total_pages: number;
   dates: {
     maximum: string;
     minimum: string;
   };
+}
+
+export interface DtoTopRatedTvShows {
+  page: number;
+  results: MinimalTvShow[];
+  total_results: number;
+  total_pages: number;
+}
+
+export interface DtoTvShowsOnTheAir {
+  page: number;
+  results: MinimalTvShow[];
+  total_results: number;
+  total_pages: number;
 }

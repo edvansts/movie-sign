@@ -286,4 +286,72 @@ export class TvShowsService {
 
     return seasons;
   }
+
+  async getTopRated() {
+    try {
+      const { results: tvShows } =
+        await this.theMovieDbService.getTopRatedTvShows();
+
+      const tvShowsList = (
+        await Promise.all(
+          tvShows.map(async (tvShow) => {
+            const { id, popularity, vote_average } = tvShow;
+
+            try {
+              if (!id) {
+                return null;
+              }
+
+              const response = await this.getTvShowByTmdbId(id, {
+                lastPopularity: popularity,
+                lastRating: vote_average,
+              });
+
+              return response;
+            } catch (err) {
+              return null;
+            }
+          }),
+        )
+      ).filter((tvShow) => !!tvShow);
+
+      return tvShowsList;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async getOnTheAir() {
+    try {
+      const { results: tvShows } =
+        await this.theMovieDbService.getTvShowsOnTheAir();
+
+      const tvShowsList = (
+        await Promise.all(
+          tvShows.map(async (tvShow) => {
+            const { id, popularity, vote_average } = tvShow;
+
+            try {
+              if (!id) {
+                return null;
+              }
+
+              const response = await this.getTvShowByTmdbId(id, {
+                lastPopularity: popularity,
+                lastRating: vote_average,
+              });
+
+              return response;
+            } catch (err) {
+              return null;
+            }
+          }),
+        )
+      ).filter((tvShow) => !!tvShow);
+
+      return tvShowsList;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.NOT_FOUND);
+    }
+  }
 }

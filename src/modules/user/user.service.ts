@@ -36,14 +36,33 @@ export class UserService {
       throw new HttpException('Usuário já existe', HttpStatus.BAD_REQUEST);
     }
 
+    const validUsername = await this.generateRandomUsername(username);
+
     const createdUser = new this.userModel({
       ...payload,
+      username: validUsername,
       isRegisteredWithGoogle: true,
     });
 
     await createdUser.save();
 
     return this.sanitizeUser(createdUser.toObject());
+  }
+
+  async generateRandomUsername(baseName: string) {
+    const randomNumber = Math.floor(Math.random() * 1000);
+
+    const newUsername = `${baseName}${randomNumber}`;
+
+    const usernameAlreadyExists = await this.userExists({
+      username: newUsername,
+    });
+
+    if (usernameAlreadyExists) {
+      return this.generateRandomUsername(baseName);
+    }
+
+    return newUsername;
   }
 
   private async userExists(data: { username?: string; email?: string }) {
@@ -104,8 +123,6 @@ export class UserService {
       return null;
     }
 
-    return await this.userModel.findOne({
-      $or: [{ email }, { username }],
-    });
+    return await this.userModel.findOne({ email, username });
   }
 }
