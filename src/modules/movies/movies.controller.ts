@@ -98,4 +98,11 @@ export class MoviesController {
   async getMovieById(@Param('movieId') movieId: string) {
     return await this.moviesService.getMovieById(movieId);
   }
+
+  @Get('/tmdb/:tmdbId')
+  @ApiOperation({ summary: 'Get movie by tmdb id' })
+  @ApiOkResponse()
+  async getMovieByTmdbId(@Param('tmdbId') tmdbId: string) {
+    return await this.moviesService.getMovieByTmdbId(tmdbId);
+  }
 }

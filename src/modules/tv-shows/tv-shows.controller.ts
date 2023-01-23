@@ -63,4 +63,11 @@ export class TvShowsController {
   async getTvShowById(@Param('tvShowId') tvShowId: string) {
     return await this.tvShowsService.getTvShowById(tvShowId);
   }
+
+  @ApiOperation({ summary: 'Get tv show details by tmdb id' })
+  @ApiResponse({ status: 200, type: TvShow })
+  @Get('tmdb/:tmdbId')
+  async getTvShowByTmdbId(@Param('tmdbId') tmdbId: string) {
+    return await this.tvShowsService.getTvShowByTmdbId(tmdbId);
+  }
 }

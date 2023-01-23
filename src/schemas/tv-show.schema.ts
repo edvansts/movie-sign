@@ -29,7 +29,7 @@ export class TvShow {
   lastRating: number;
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ type: String })
   overview: string;
 
   @ApiProperty()
@@ -37,11 +37,11 @@ export class TvShow {
   lastPopularity: number;
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ type: Date })
   firstAirDate: Date;
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ type: Date })
   lastAirDate: Date;
 
   @ApiProperty()

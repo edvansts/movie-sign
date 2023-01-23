@@ -29,7 +29,7 @@ export class Movie {
   lastRating: number;
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ type: String })
   overview: string;
 
   @ApiProperty()

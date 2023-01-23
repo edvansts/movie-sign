@@ -102,38 +102,42 @@ export class TvShowsService {
       lastAirDate?: Date;
     },
   ) {
-    const tvShowFromDb = await this.tvShowModel.findOne({
-      tmdbId: tmdbId,
-    });
+    try {
+      const tvShowFromDb = await this.tvShowModel.findOne({
+        tmdbId: tmdbId,
+      });
 
-    if (tvShowFromDb) {
-      if (additionalData) {
-        tvShowFromDb.update({
-          $set: {
-            ...additionalData,
-          },
-        });
+      if (tvShowFromDb) {
+        if (additionalData) {
+          tvShowFromDb.update({
+            $set: {
+              ...additionalData,
+            },
+          });
+        }
+
+        return tvShowFromDb;
       }
 
-      return tvShowFromDb;
+      const dtoTvShow = await this.theMovieDbService.getTvShowById(tmdbId);
+
+      const newTvShow = this.normalizeDtoTvShow(dtoTvShow);
+
+      await newTvShow.save();
+
+      (dtoTvShow.seasons || []).map(
+        async ({ season_number }) =>
+          await this.seasonService.getSeasonByTmdbId(
+            newTvShow.tmdbId,
+            season_number,
+            newTvShow._id,
+          ),
+      );
+
+      return newTvShow;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
-
-    const dtoTvShow = await this.theMovieDbService.getTvShowById(tmdbId);
-
-    const newTvShow = this.normalizeDtoTvShow(dtoTvShow);
-
-    await newTvShow.save();
-
-    (dtoTvShow.seasons || []).map(
-      async ({ season_number }) =>
-        await this.seasonService.getSeasonByTmdbId(
-          newTvShow.tmdbId,
-          season_number,
-          newTvShow._id,
-        ),
-    );
-
-    return newTvShow;
   }
 
   async getTvShowById(tvShowId: string) {

@@ -102,51 +102,55 @@ export class MoviesService {
   }
 
   async getMovieByTmdbId(tmdbId: number | string) {
-    const dbMovie = await this.movieModel.findOne({
-      tmdbId,
-    });
+    try {
+      const dbMovie = await this.movieModel.findOne({
+        tmdbId,
+      });
 
-    if (dbMovie) {
-      if (differenceInMonths(dbMovie.updatedAt, new Date()) >= 1) {
-        await this.updateMovieInfo(dbMovie);
+      if (dbMovie) {
+        if (differenceInMonths(dbMovie.updatedAt, new Date()) >= 1) {
+          await this.updateMovieInfo(dbMovie);
+        }
+
+        return dbMovie;
       }
 
-      return dbMovie;
+      const {
+        title,
+        originalTitle,
+        voteAverage,
+        releaseDate,
+        popularity,
+        posterPath,
+        imdbId,
+        id: newTmdbId,
+        overview,
+        backdropPath,
+        adult,
+        runtime,
+      } = await this.theMovieDbService.getMovieById(tmdbId);
+
+      const newMovieModel = new this.movieModel({
+        title: title || originalTitle,
+        lastRating: voteAverage,
+        releaseDate: new Date(releaseDate),
+        lastPopularity: popularity,
+        imdbId,
+        tmdbId: newTmdbId,
+        posterImage: posterPath ?? getImageUrl(posterPath),
+        backdropImage: backdropPath ?? getImageUrl(backdropPath),
+        overview: overview || '',
+        originalTitle: originalTitle || '',
+        adult,
+        runtime,
+      });
+
+      const createdMovie = await this.movieModel.create(newMovieModel);
+
+      return createdMovie;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
-
-    const {
-      title,
-      originalTitle,
-      voteAverage,
-      releaseDate,
-      popularity,
-      posterPath,
-      imdbId,
-      id: newTmdbId,
-      overview,
-      backdropPath,
-      adult,
-      runtime,
-    } = await this.theMovieDbService.getMovieById(tmdbId);
-
-    const newMovieModel = new this.movieModel({
-      title: title || originalTitle,
-      lastRating: voteAverage,
-      releaseDate: new Date(releaseDate),
-      lastPopularity: popularity,
-      imdbId,
-      tmdbId: newTmdbId,
-      posterImage: posterPath ?? getImageUrl(posterPath),
-      backdropImage: backdropPath ?? getImageUrl(backdropPath),
-      overview: overview || '',
-      originalTitle: originalTitle || '',
-      adult,
-      runtime,
-    });
-
-    const createdMovie = await this.movieModel.create(newMovieModel);
-
-    return createdMovie;
   }
 
   async searchMoviesByQuery({ limit = 20, query }: SearchByNameQueryParams) {
